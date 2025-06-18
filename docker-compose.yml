@@ -4,7 +4,7 @@ services:
   app:
     image: weseek/growi:7
     ports:
-      - 127.0.0.1:3000:3000    # localhost only by default
+      - 3000:3000    # localhost only by default
     links:
       - mongo:mongo
       - elasticsearch:elasticsearch
@@ -19,7 +19,7 @@ services:
       - BULK_EXPORT_PDF_CONVERTER_URI=http://pdf-converter:3010
       - PASSWORD_SEED=changeme
       # - FILE_UPLOAD=mongodb   # activate this line if you use MongoDB GridFS rather than AWS
-      # - FILE_UPLOAD=local     # activate this line if you use local storage of server rather than AWS
+      - FILE_UPLOAD=local     # activate this line if you use local storage of server rather than AWS
       # - MATHJAX=1             # activate this line if you want to use MathJax
       # - PLANTUML_URI=http://  # activate this line and specify if you use your own PlantUML server rather than public plantuml.com
       # - FORCE_WIKI_MODE='public'    # activate this line to force wiki public mode
@@ -51,7 +51,7 @@ services:
       dockerfile: ./Dockerfile
     environment:
       - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms256m -Xmx256m"  # increase amount if you have enough memory
+      - "ES_JAVA_OPTS=-Xms2048m -Xmx2048m"  # increase amount if you have enough memory
       - LOG4J_FORMAT_MSG_NO_LOOKUPS=true # CVE-2021-44228 mitigation for Elasticsearch <= 6.8.20/7.16.0
     ulimits:
       memlock:
@@ -75,7 +75,23 @@ services:
 
 volumes:
   growi_data:
+    driver_opts:
+      type: nfs
+      o: "addr=192.168.0.12,hard,rsize=1048576,wsize=1048576,nfsvers=4"
+      device: ":/mnt/share.pool.nas2.anl/nfs/growi/growi_data"
   mongo_configdb:
+    driver_opts:
+      type: nfs
+      o: "addr=192.168.0.12,hard,rsize=1048576,wsize=1048576,nfsvers=4"
+      device: ":/mnt/share.pool.nas2.anl/nfs/growi/mongo_configdb"
   mongo_db:
+    driver_opts:
+      type: nfs
+      o: "addr=192.168.0.12,hard,rsize=1048576,wsize=1048576,nfsvers=4"
+      device: ":/mnt/share.pool.nas2.anl/nfs/growi/mongo_db"
   es_data:
+    driver_opts:
+      type: nfs
+      o: "addr=192.168.0.12,hard,rsize=1048576,wsize=1048576,nfsvers=4"
+      device: ":/mnt/share.pool.nas2.anl/nfs/growi/es_data"
   page_bulk_export_tmp:
