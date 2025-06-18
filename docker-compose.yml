@@ -68,7 +68,7 @@ services:
       retries: 6
 
   pdf-converter:
-    image: growilabs/pdf-converter:latest
+    image: growilabs/pdf-converter:1.0.0
     restart: unless-stopped
     volumes:
       - page_bulk_export_tmp:/tmp/page-bulk-export
